@@ -24,7 +24,7 @@ body {
     line-height: 1.6;
     color: var(--text);
     background: var(--bg);
-    padding: 1rem;
+    padding: 0 0 2rem;
 }
 
 a { color: var(--accent); }
@@ -35,19 +35,58 @@ a:hover { text-decoration: underline; }
 .container {
     max-width: 720px;
     margin: 0 auto;
-    padding: 1.5rem 0 3rem;
+    padding: 1.5rem 1.25rem 3rem;
 }
 
 .container--narrow {
-    max-width: 380px;
+    max-width: 420px;
 }
 
-/* ── Header ────────────────────────────────────────────────────────────────── */
+/* ── Site header (shared nav bar) ──────────────────────────────────────────── */
 
-header h1 {
-    font-size: 2rem;
+.site-header {
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: .8rem 1.25rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 6px rgba(0,0,0,.15);
+}
+
+.site-header__title {
+    font-size: 1.1rem;
     font-weight: 700;
-    letter-spacing: -.5px;
+    color: #fff;
+    text-decoration: none;
+    letter-spacing: -.2px;
+}
+.site-header__title:hover { text-decoration: none; filter: brightness(1.15); }
+
+.site-header__nav {
+    display: flex;
+    gap: 1.25rem;
+    font-size: .9rem;
+}
+
+.site-header__nav a {
+    color: rgba(255,255,255,.75);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color .15s;
+}
+.site-header__nav a:hover { color: #fff; text-decoration: none; }
+.site-header__nav a.active { color: #fff; }
+
+/* ── Page title (below shared header, inside container) ────────────────────── */
+
+.page-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 1.25rem 0 1rem;
 }
 
 .subtitle {
@@ -76,6 +115,24 @@ header h1 {
     padding: 2rem 0;
 }
 
+/* ── Error page ────────────────────────────────────────────────────────────── */
+
+.error-page {
+    padding: 3rem 0 2rem;
+    text-align: center;
+}
+
+.error-page__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: .75rem;
+}
+
+.error-page__msg {
+    color: var(--muted);
+    margin-bottom: 1.5rem;
+}
+
 /* ── Gift list ─────────────────────────────────────────────────────────────── */
 
 .gift-list {
@@ -96,6 +153,27 @@ header h1 {
 
 .gift-card--claimed {
     opacity: .55;
+}
+
+.gift-card__body {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    margin-bottom: .25rem;
+}
+
+.gift-card__image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.gift-card__info {
+    flex: 1;
+    min-width: 0;
 }
 
 .gift-card__name {
@@ -135,6 +213,15 @@ header h1 {
 
 .badge--claimed { background: #e2e0da; color: var(--muted); }
 .badge--partial { background: var(--accent-lt); color: var(--accent); }
+.badge--domain  {
+    background: #eef2ff;
+    color: #3b5bdb;
+    text-decoration: none;
+    font-size: .72rem;
+    display: inline-block;
+    margin-top: .2rem;
+}
+.badge--domain:hover { filter: brightness(.93); text-decoration: none; }
 
 /* Fully-claimed card: strikethrough the name */
 .gift-card--claimed .gift-card__name {
@@ -142,12 +229,19 @@ header h1 {
     text-decoration-color: var(--muted);
 }
 
-/* ── Claim form ────────────────────────────────────────────────────────────── */
+/* ── Claim / unclaim actions ───────────────────────────────────────────────── */
 
-.gift-card__claim {
+.gift-card__actions {
     border-top: 1px solid var(--border);
     padding-top: .75rem;
     margin-top: .25rem;
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+}
+
+.gift-card__claim {
+    /* sits inside .gift-card__actions */
 }
 
 .claim-form {
@@ -170,6 +264,40 @@ header h1 {
     outline: 2px solid var(--accent);
     outline-offset: 1px;
     border-color: transparent;
+}
+
+/* ── Unclaim ───────────────────────────────────────────────────────────────── */
+
+.btn--link {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: .8rem;
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+.btn--link:hover { color: var(--text); }
+
+.unclaim-list {
+    list-style: none;
+    margin-top: .4rem;
+    display: flex;
+    flex-direction: column;
+    gap: .3rem;
+}
+
+.unclaim-list li {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font-size: .85rem;
+}
+
+.unclaim-list__name {
+    color: var(--muted);
+    flex: 1;
 }
 
 /* ── Buttons ───────────────────────────────────────────────────────────────── */
@@ -224,16 +352,6 @@ header h1 {
 
 /* ── Admin layout ──────────────────────────────────────────────────────────── */
 
-.admin-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: .5rem;
-    margin-bottom: 1.5rem;
-}
-
-.admin-header nav { display: flex; gap: 1rem; font-size: .92rem; }
 
 .admin-section {
     background: var(--surface);
@@ -242,6 +360,21 @@ header h1 {
     box-shadow: var(--shadow);
     padding: 1.25rem;
     margin-bottom: 1.5rem;
+}
+
+.admin-section--danger {
+    border-color: var(--danger);
+    background: var(--danger-lt);
+}
+
+.admin-section--danger h2 {
+    color: var(--danger);
+}
+
+.admin-section--danger p {
+    font-size: .92rem;
+    margin-bottom: 1rem;
+    color: var(--text);
 }
 
 .admin-section h2 {
@@ -261,6 +394,7 @@ header h1 {
 .form-row--short { max-width: 160px; }
 
 .form-row label { font-size: .88rem; font-weight: 600; color: var(--muted); }
+.form-hint { font-weight: 400; font-size: .82rem; color: var(--muted); }
 
 .form-row input[type="text"],
 .form-row input[type="url"],

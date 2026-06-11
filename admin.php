@@ -1,6 +1,7 @@
 <?php
 session_start();
 require __DIR__ . '/config.php';
+require __DIR__ . '/partials/error_page.php';
 
 // --- Authentication -----------------------------------------------------------
 
@@ -26,8 +27,9 @@ if (empty($_SESSION['admin'])) {
         <link rel="stylesheet" href="assets/style.css">
     </head>
     <body>
+    <?php require __DIR__ . '/partials/header.php' ?>
     <div class="container container--narrow">
-        <h1>Admin Login</h1>
+        <h2 class="page-title">Admin Login</h2>
         <?php if ($loginError): ?>
             <div class="flash flash--error"><?= htmlspecialchars($loginError) ?></div>
         <?php endif ?>
@@ -36,7 +38,6 @@ if (empty($_SESSION['admin'])) {
             <input type="password" id="password" name="password" autofocus required>
             <button type="submit" class="btn btn--primary">Log in</button>
         </form>
-        <p><a href="index.php">← Back to wishlist</a></p>
     </div>
     </body>
     </html>
@@ -54,7 +55,7 @@ try {
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
 } catch (PDOException $e) {
-    die('Database connection failed.');
+    showErrorPage('Could not connect to the database. Please try again later.');
 }
 
 $gifts = $pdo->query('
@@ -92,14 +93,8 @@ $err = $_GET['err'] ?? '';
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
+<?php require __DIR__ . '/partials/header.php' ?>
 <div class="container">
-    <header class="admin-header">
-        <h1>Admin — <?= htmlspecialchars(SITE_TITLE) ?></h1>
-        <nav>
-            <a href="index.php">View wishlist</a>
-            <a href="logout.php">Log out</a>
-        </nav>
-    </header>
 
     <?php if ($msg === 'saved'): ?>
         <div class="flash flash--success">Gift saved.</div>
@@ -107,6 +102,8 @@ $err = $_GET['err'] ?? '';
         <div class="flash flash--success">Gift deleted.</div>
     <?php elseif ($msg === 'unclaimed'): ?>
         <div class="flash flash--success">Claim removed.</div>
+    <?php elseif ($msg === 'reset'): ?>
+        <div class="flash flash--success">Database reset — all tables recreated.</div>
     <?php elseif ($err === 'invalid'): ?>
         <div class="flash flash--error">Something went wrong. Please try again.</div>
     <?php endif ?>
@@ -129,6 +126,11 @@ $err = $_GET['err'] ?? '';
                 <label for="url">Link (URL)</label>
                 <input type="url" id="url" name="url" maxlength="1000"
                        value="<?= htmlspecialchars($editGift['url'] ?? '') ?>">
+            </div>
+            <div class="form-row">
+                <label for="image_url">Image URL <span class="form-hint">(hotlinked thumbnail, optional)</span></label>
+                <input type="url" id="image_url" name="image_url" maxlength="1000"
+                       value="<?= htmlspecialchars($editGift['image_url'] ?? '') ?>">
             </div>
             <div class="form-row">
                 <label for="description">Description</label>
@@ -221,6 +223,17 @@ $err = $_GET['err'] ?? '';
             </tbody>
         </table>
         <?php endif ?>
+    </section>
+
+    <!-- Danger Zone -->
+    <section class="admin-section admin-section--danger">
+        <h2>Danger Zone</h2>
+        <p>Wipe the database and recreate all tables from scratch. Use this when the schema has changed.
+           <strong>All gifts and claims will be permanently deleted.</strong></p>
+        <form method="post" action="admin_reset.php"
+              onsubmit="return confirm('This will DELETE ALL GIFTS AND CLAIMS and recreate the tables. There is no undo.\n\nAre you absolutely sure?')">
+            <button type="submit" class="btn btn--danger">Reset database</button>
+        </form>
     </section>
 </div>
 

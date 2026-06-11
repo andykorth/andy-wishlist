@@ -63,3 +63,14 @@ AI: mark tasks `[x]` as each one is completed.
 - [x] Cross-check all user-facing output is wrapped in `htmlspecialchars()`
 - [x] Cross-check all queries use PDO prepared statements (no string interpolation)
 - [x] Add instructions block at top of `config.example.php` for how to generate the password hash
+
+## Phase 6 — New features
+
+- [x] Update README.md with project details, features, how to run it, plus a description of what each php file does.
+- [x] Create a common page header for all pages. Include a link to admin and index pages.
+- [x] Format and style the header nicely with css.
+- [x] Allow someone to unclaim a gift claimed by themselves or someone else, similar to the ability for admins to do so.
+- [x] Add a optional image url. This is for hotlinked images hosted elsewhere. If present, hotlink an icon for them.
+- [x] When showing the gift list, if a link is present, make the link more obvious by including the domain of the link, styled as a badge. 
+- [x] Make sure error pages are also styled to match the other pages, including errors that occur when it can't connect to the db.
+- [x] Add an admin button that can wipe the db and re-run setup. This is an easy way to deal with db format changes.

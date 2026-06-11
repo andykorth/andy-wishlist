@@ -32,6 +32,7 @@ switch ($action) {
     case 'create':
         $name       = trim($_POST['name'] ?? '');
         $url        = trim($_POST['url'] ?? '');
+        $imageUrl   = trim($_POST['image_url'] ?? '');
         $desc       = trim($_POST['description'] ?? '');
         $quantity   = max(1, (int) ($_POST['quantity'] ?? 1));
         $sortOrder  = max(0, (int) ($_POST['sort_order'] ?? 0));
@@ -42,12 +43,13 @@ switch ($action) {
         }
 
         $stmt = $pdo->prepare('
-            INSERT INTO gifts (name, url, description, quantity, sort_order)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO gifts (name, url, image_url, description, quantity, sort_order)
+            VALUES (?, ?, ?, ?, ?, ?)
         ');
         $stmt->execute([
             $name,
             $url !== '' ? $url : null,
+            $imageUrl !== '' ? $imageUrl : null,
             $desc !== '' ? $desc : null,
             $quantity,
             $sortOrder,
@@ -59,6 +61,7 @@ switch ($action) {
         $id         = (int) ($_POST['id'] ?? 0);
         $name       = trim($_POST['name'] ?? '');
         $url        = trim($_POST['url'] ?? '');
+        $imageUrl   = trim($_POST['image_url'] ?? '');
         $desc       = trim($_POST['description'] ?? '');
         $quantity   = max(1, (int) ($_POST['quantity'] ?? 1));
         $sortOrder  = max(0, (int) ($_POST['sort_order'] ?? 0));
@@ -70,12 +73,13 @@ switch ($action) {
 
         $stmt = $pdo->prepare('
             UPDATE gifts
-            SET name = ?, url = ?, description = ?, quantity = ?, sort_order = ?
+            SET name = ?, url = ?, image_url = ?, description = ?, quantity = ?, sort_order = ?
             WHERE id = ?
         ');
         $stmt->execute([
             $name,
             $url !== '' ? $url : null,
+            $imageUrl !== '' ? $imageUrl : null,
             $desc !== '' ? $desc : null,
             $quantity,
             $sortOrder,

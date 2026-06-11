@@ -31,6 +31,7 @@ $statements = [
             name        VARCHAR(255) NOT NULL,
             description TEXT,
             url         VARCHAR(1000),
+            image_url   VARCHAR(1000),
             quantity    INT NOT NULL DEFAULT 1,
             sort_order  INT NOT NULL DEFAULT 0,
             created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
