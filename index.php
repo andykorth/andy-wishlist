@@ -44,7 +44,7 @@ $err = $_GET['err'] ?? '';
 <body>
 <?php require __DIR__ . '/partials/header.php' ?>
 <div class="container">
-    <p class="subtitle">See something you'd like to get me? Click "I'll get this" to claim it.</p>
+    <p class="subtitle">This is Andy's rolling wishlist for birthdays, holidays, etc. They are roughly prioritized. Most of them will include links where you can buy them online, but you can mark them off no matter where you buy them.</p>
 
     <?php if ($msg === 'claimed'): ?>
         <div class="flash flash--success">Gift claimed — thank you!</div>
@@ -116,7 +116,7 @@ $err = $_GET['err'] ?? '';
                 <div class="gift-card__actions">
                     <?php if (!$full): ?>
                     <div class="gift-card__claim">
-                        <button class="btn btn--claim" onclick="toggleClaim(this)">I'll get this</button>
+                        <button class="btn btn--claim" onclick="toggleClaim(this)">I bought this</button>
                         <form class="claim-form" action="claim.php" method="post" style="display:none">
                             <input type="hidden" name="gift_id" value="<?= $giftId ?>">
                             <input type="text" name="claimer_name" placeholder="Your name (optional)" maxlength="255" autocomplete="name">
@@ -129,7 +129,7 @@ $err = $_GET['err'] ?? '';
                     <?php if (!empty($giftClaims)): ?>
                     <div class="gift-card__unclaim">
                         <button class="btn--link" onclick="toggleUnclaim(<?= $giftId ?>)">
-                            Someone claimed this by mistake? Remove a claim ↓
+                            See claimed purchases. If it was an accident, remove a claim:
                         </button>
                         <ul class="unclaim-list" id="unclaim-<?= $giftId ?>" style="display:none">
                             <?php foreach ($giftClaims as $claim): ?>
