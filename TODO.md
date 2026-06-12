@@ -74,3 +74,11 @@ AI: mark tasks `[x]` as each one is completed.
 - [x] When showing the gift list, if a link is present, make the link more obvious by including the domain of the link, styled as a badge. 
 - [x] Make sure error pages are also styled to match the other pages, including errors that occur when it can't connect to the db.
 - [x] Add an admin button that can wipe the db and re-run setup. This is an easy way to deal with db format changes.
+
+# Phase 7 - Version 2 features
+
+- [x] If the product contains an amazon link, extract the product identifier from the URL and also include a link to camelcamelcamel.com, which uses a format like this: https://camelcamelcamel.com/product/B07NNW33MD
+- [x] Check the README for stereotypical LLM generated text and replace it with something more human sounding. Avoid emdashes, and avoid punchy "no X, no Y, just Z" phrases.
+- [x] Add a footer that links to the https://github.com/andykorth/andy-wishlist page and mention the MIT license
+- [x] Link to kortham.net as the author in the footer also.
+- [x] Is there anything we can do to hide the index.php? Just to make it classier?

@@ -1,6 +1,6 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: index.php');
+    header('Location: ./');
     exit;
 }
 
@@ -10,7 +10,7 @@ $giftId      = isset($_POST['gift_id']) ? (int) $_POST['gift_id'] : 0;
 $claimerName = isset($_POST['claimer_name']) ? trim($_POST['claimer_name']) : '';
 
 if ($giftId <= 0) {
-    header('Location: index.php?err=invalid');
+    header('Location: ./?err=invalid');
     exit;
 }
 
@@ -22,7 +22,7 @@ try {
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
 } catch (PDOException $e) {
-    header('Location: index.php?err=invalid');
+    header('Location: ./?err=invalid');
     exit;
 }
 
@@ -43,13 +43,13 @@ try {
 
     if (!$gift) {
         $pdo->rollBack();
-        header('Location: index.php?err=invalid');
+        header('Location: ./?err=invalid');
         exit;
     }
 
     if ((int) $gift['claimed_count'] >= (int) $gift['quantity']) {
         $pdo->rollBack();
-        header('Location: index.php?err=already_claimed');
+        header('Location: ./?err=already_claimed');
         exit;
     }
 
@@ -62,9 +62,9 @@ try {
     $pdo->commit();
 } catch (PDOException $e) {
     $pdo->rollBack();
-    header('Location: index.php?err=invalid');
+    header('Location: ./?err=invalid');
     exit;
 }
 
-header('Location: index.php?msg=claimed');
+header('Location: ./?msg=claimed');
 exit;

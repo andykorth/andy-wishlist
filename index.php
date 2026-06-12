@@ -68,9 +68,14 @@ $err = $_GET['err'] ?? '';
             $full      = $remaining <= 0;
             $giftClaims = $claimsMap[$giftId] ?? [];
             $domain = '';
+            $asin = '';
             if ($gift['url']) {
                 $host = parse_url($gift['url'], PHP_URL_HOST) ?: '';
                 $domain = preg_replace('/^www\./', '', $host);
+                if (preg_match('/amazon\./i', $host) &&
+                    preg_match('/(?:dp|gp\/product)\/([A-Z0-9]{10})/i', $gift['url'], $m)) {
+                    $asin = $m[1];
+                }
             }
         ?>
             <li class="gift-card <?= $full ? 'gift-card--claimed' : '' ?>">
@@ -94,6 +99,11 @@ $err = $_GET['err'] ?? '';
                         <?php if ($domain): ?>
                             <a class="badge badge--domain" href="<?= htmlspecialchars($gift['url']) ?>" target="_blank" rel="noopener">
                                 <?= htmlspecialchars($domain) ?> ↗
+                            </a>
+                        <?php endif ?>
+                        <?php if ($asin): ?>
+                            <a class="badge badge--camel" href="https://camelcamelcamel.com/product/<?= htmlspecialchars($asin) ?>" target="_blank" rel="noopener">
+                                price history ↗
                             </a>
                         <?php endif ?>
 
@@ -153,6 +163,7 @@ $err = $_GET['err'] ?? '';
         </ul>
     <?php endif ?>
 </div>
+<?php require __DIR__ . '/partials/footer.php' ?>
 
 <script>
 function toggleClaim(btn, cancel) {

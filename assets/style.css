@@ -223,6 +223,17 @@ a:hover { text-decoration: underline; }
 }
 .badge--domain:hover { filter: brightness(.93); text-decoration: none; }
 
+.badge--camel {
+    background: #fff8ee;
+    color: #b45309;
+    text-decoration: none;
+    font-size: .72rem;
+    display: inline-block;
+    margin-top: .2rem;
+    margin-left: .25rem;
+}
+.badge--camel:hover { filter: brightness(.93); text-decoration: none; }
+
 /* Fully-claimed card: strikethrough the name */
 .gift-card--claimed .gift-card__name {
     text-decoration: line-through;
@@ -462,6 +473,36 @@ a:hover { text-decoration: underline; }
     display: flex;
     flex-direction: column;
     gap: .25rem;
+}
+
+/* ── Site footer ───────────────────────────────────────────────────────────── */
+
+.site-footer {
+    margin-top: 3rem;
+    padding: 1.25rem 1.25rem;
+    border-top: 1px solid var(--border);
+    font-size: .82rem;
+    color: var(--muted);
+}
+
+.site-footer__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    flex-wrap: wrap;
+}
+
+.site-footer a {
+    color: var(--muted);
+}
+.site-footer a:hover {
+    color: var(--text);
+}
+
+.site-footer__sep {
+    color: var(--border);
 }
 
 /* ── Responsive ────────────────────────────────────────────────────────────── */

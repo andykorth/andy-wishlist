@@ -23,7 +23,7 @@ function showErrorPage(string $message): never {
         <div class="error-page">
             <h2 class="error-page__title">Something went wrong</h2>
             <p class="error-page__msg"><?= htmlspecialchars($message) ?></p>
-            <a href="index.php" class="btn">← Back to wishlist</a>
+            <a href="./" class="btn">← Back to wishlist</a>
         </div>
     </div>
     </body>

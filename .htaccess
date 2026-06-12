@@ -1,0 +1,6 @@
+DirectoryIndex index.php
+
+RewriteEngine On
+# Redirect /index.php to / (preserves query string via QSA)
+RewriteCond %{THE_REQUEST} /index\.php [NC]
+RewriteRule ^index\.php$ / [R=301,L,QSA]

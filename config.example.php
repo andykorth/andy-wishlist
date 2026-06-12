@@ -3,9 +3,9 @@
 // config.php is excluded from git — never commit it.
 
 // ---------------------------------------------------------------------------
-// Database (from Dreamhost panel → MySQL Databases)
+// Database
 // ---------------------------------------------------------------------------
-define('DB_HOST', 'mysql.yourdomain.com');   // Dreamhost MySQL hostname
+define('DB_HOST', 'mysql.yourdomain.com'); 
 define('DB_NAME', 'your_database_name');
 define('DB_USER', 'your_database_user');
 define('DB_PASS', 'your_database_password');

@@ -236,6 +236,7 @@ $err = $_GET['err'] ?? '';
         </form>
     </section>
 </div>
+<?php require __DIR__ . '/partials/footer.php' ?>
 
 <script>
 function toggleClaims(id) {
