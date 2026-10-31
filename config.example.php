@@ -21,4 +21,4 @@ define('ADMIN_PASSWORD_HASH', '$2y$10$REPLACE_THIS_WITH_YOUR_GENERATED_HASH');
 // ---------------------------------------------------------------------------
 // Site identity
 // ---------------------------------------------------------------------------
-define('SITE_TITLE', "Andy's Wishlist");
+define('SITE_TITLE', 'Korth Family Wishlist');

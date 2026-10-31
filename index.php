@@ -2,6 +2,7 @@
 session_start();
 require __DIR__ . '/config.php';
 require __DIR__ . '/partials/error_page.php';
+require __DIR__ . '/partials/schema.php';
 
 try {
     $pdo = new PDO(
@@ -14,20 +15,56 @@ try {
     showErrorPage('Could not connect to the database. Please try again later.');
 }
 
-$stmt = $pdo->query('
-    SELECT g.*, COUNT(c.id) AS claimed_count
-    FROM gifts g
-    LEFT JOIN claims c ON c.gift_id = g.id
-    GROUP BY g.id
-    ORDER BY g.sort_order ASC, g.created_at ASC
-');
-$gifts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+ensureSchema($pdo);
 
-// Fetch individual claims so we can render the public unclaim UI
+$people = $pdo->query('
+    SELECT p.*, COUNT(g.id) AS gift_count
+    FROM people p
+    LEFT JOIN gifts g ON g.person_id = p.id AND g.archived_at IS NULL
+    GROUP BY p.id
+    ORDER BY p.sort_order ASC, p.name ASC
+')->fetchAll(PDO::FETCH_ASSOC);
+
+// Pick whose list to show: ?for=<slug>, or the only person if there is just one.
+$person  = null;
+$forSlug = trim($_GET['for'] ?? '');
+if ($forSlug !== '') {
+    foreach ($people as $p) {
+        if ($p['slug'] === $forSlug) {
+            $person = $p;
+            break;
+        }
+    }
+} elseif (count($people) === 1) {
+    $person = $people[0];
+}
+
+$gifts     = [];
 $claimsMap = [];
-$claimRows = $pdo->query('SELECT * FROM claims ORDER BY claimed_at ASC')->fetchAll(PDO::FETCH_ASSOC);
-foreach ($claimRows as $row) {
-    $claimsMap[$row['gift_id']][] = $row;
+if ($person) {
+    $stmt = $pdo->prepare('
+        SELECT g.*, COUNT(c.id) AS claimed_count
+        FROM gifts g
+        LEFT JOIN claims c ON c.gift_id = g.id
+        WHERE g.person_id = ? AND g.archived_at IS NULL
+        GROUP BY g.id
+        ORDER BY g.sort_order ASC, g.created_at ASC
+    ');
+    $stmt->execute([$person['id']]);
+    $gifts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Fetch individual claims so we can render the public unclaim UI
+    $stmt = $pdo->prepare('
+        SELECT c.*
+        FROM claims c
+        JOIN gifts g ON g.id = c.gift_id
+        WHERE g.person_id = ?
+        ORDER BY c.claimed_at ASC
+    ');
+    $stmt->execute([$person['id']]);
+    foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+        $claimsMap[$row['gift_id']][] = $row;
+    }
 }
 
 $msg = $_GET['msg'] ?? '';
@@ -38,13 +75,50 @@ $err = $_GET['err'] ?? '';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars(SITE_TITLE) ?></title>
-    <link rel="stylesheet" href="assets/style.css">
+    <title><?= $person ? htmlspecialchars(possessive($person['name'])) . ' list — ' : '' ?><?= htmlspecialchars(SITE_TITLE) ?></title>
+    <link rel="stylesheet" href="assets/style.css?v=<?= filemtime(__DIR__ . '/assets/style.css') ?>">
 </head>
 <body>
 <?php require __DIR__ . '/partials/header.php' ?>
 <div class="container">
-    <p class="subtitle">This is Andy's rolling wishlist for birthdays, holidays, etc. They are roughly prioritized. Most of them will include links where you can buy them online, but you can mark them off no matter where you buy them.</p>
+    <?php if (!$person): ?>
+        <h2 class="page-title">Whose list are you looking for?</h2>
+        <?php if ($forSlug !== ''): ?>
+            <div class="flash flash--error">There's no list called &ldquo;<?= htmlspecialchars($forSlug) ?>&rdquo;. Pick one below.</div>
+        <?php endif ?>
+        <?php if (empty($people)): ?>
+            <p class="empty-state">No lists yet. Check back soon!</p>
+        <?php else: ?>
+            <ul class="person-list">
+            <?php foreach ($people as $p): ?>
+                <li>
+                    <a class="person-card" href="./?for=<?= urlencode($p['slug']) ?>">
+                        <span class="avatar avatar--<?= (int) $p['id'] % 5 ?>" aria-hidden="true"><?= htmlspecialchars(mb_strtoupper(mb_substr($p['name'], 0, 1))) ?></span>
+                        <span class="person-card__text">
+                            <span class="person-card__name"><?= htmlspecialchars(possessive($p['name'])) ?> list</span>
+                            <span class="person-card__count"><?= (int) $p['gift_count'] ?> <?= (int) $p['gift_count'] === 1 ? 'gift' : 'gifts' ?></span>
+                        </span>
+                        <span class="person-card__arrow" aria-hidden="true">&rarr;</span>
+                    </a>
+                </li>
+            <?php endforeach ?>
+            </ul>
+        <?php endif ?>
+    <?php else: ?>
+
+    <?php if (count($people) > 1): ?>
+        <nav class="person-switcher" aria-label="Other lists">
+            <span class="person-switcher__label">Lists:</span>
+            <?php foreach ($people as $p): ?>
+                <a href="./?for=<?= urlencode($p['slug']) ?>"<?= $p['id'] === $person['id'] ? ' class="active" aria-current="page"' : '' ?>><span class="avatar avatar--small avatar--<?= (int) $p['id'] % 5 ?>" aria-hidden="true"><?= htmlspecialchars(mb_strtoupper(mb_substr($p['name'], 0, 1))) ?></span><?= htmlspecialchars($p['name']) ?></a>
+            <?php endforeach ?>
+        </nav>
+    <?php endif ?>
+
+    <h2 class="page-title"><?= htmlspecialchars(possessive($person['name'])) ?> list</h2>
+    <?php if ($person['intro']): ?>
+        <p class="subtitle"><?= nl2br(htmlspecialchars($person['intro'])) ?></p>
+    <?php endif ?>
 
     <?php if ($msg === 'claimed'): ?>
         <div class="flash flash--success">Gift claimed — thank you!</div>
@@ -57,7 +131,7 @@ $err = $_GET['err'] ?? '';
     <?php endif ?>
 
     <?php if (empty($gifts)): ?>
-        <p class="empty-state">No gifts listed yet — check back soon!</p>
+        <p class="empty-state">Nothing on <?= htmlspecialchars(possessive($person['name'])) ?> list yet. Check back soon!</p>
     <?php else: ?>
         <ul class="gift-list">
         <?php foreach ($gifts as $gift):
@@ -129,6 +203,7 @@ $err = $_GET['err'] ?? '';
                         <button class="btn btn--claim" onclick="toggleClaim(this)">I bought this</button>
                         <form class="claim-form" action="claim.php" method="post" style="display:none">
                             <input type="hidden" name="gift_id" value="<?= $giftId ?>">
+                            <input type="hidden" name="for" value="<?= htmlspecialchars($person['slug']) ?>">
                             <input type="text" name="claimer_name" placeholder="Your name (optional)" maxlength="255" autocomplete="name">
                             <button type="submit" class="btn btn--confirm">Confirm</button>
                             <button type="button" class="btn btn--cancel" onclick="toggleClaim(this.closest('.gift-card__claim').querySelector('.btn--claim'), true)">Cancel</button>
@@ -149,6 +224,7 @@ $err = $_GET['err'] ?? '';
                                 </span>
                                 <form method="post" action="unclaim.php" style="display:inline">
                                     <input type="hidden" name="claim_id" value="<?= (int)$claim['id'] ?>">
+                                    <input type="hidden" name="for" value="<?= htmlspecialchars($person['slug']) ?>">
                                     <button type="submit" class="btn btn--tiny btn--danger"
                                             onclick="return confirm('Remove this claim?')">Remove</button>
                                 </form>
@@ -162,6 +238,8 @@ $err = $_GET['err'] ?? '';
         <?php endforeach ?>
         </ul>
     <?php endif ?>
+
+    <?php endif // $person ?>
 </div>
 <?php require __DIR__ . '/partials/footer.php' ?>
 

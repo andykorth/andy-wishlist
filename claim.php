@@ -6,11 +6,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 require __DIR__ . '/config.php';
 
+// Send the visitor back to the list they came from
+$for  = trim($_POST['for'] ?? '');
+$back = $for !== '' ? './?for=' . rawurlencode($for) . '&' : './?';
+require __DIR__ . '/partials/schema.php';
+
 $giftId      = isset($_POST['gift_id']) ? (int) $_POST['gift_id'] : 0;
 $claimerName = isset($_POST['claimer_name']) ? trim($_POST['claimer_name']) : '';
 
 if ($giftId <= 0) {
-    header('Location: ./?err=invalid');
+    header('Location: ' . $back . 'err=invalid');
     exit;
 }
 
@@ -22,9 +27,11 @@ try {
         [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
 } catch (PDOException $e) {
-    header('Location: ./?err=invalid');
+    header('Location: ' . $back . 'err=invalid');
     exit;
 }
+
+ensureSchema($pdo);
 
 // Lock the row and check remaining quantity atomically
 $pdo->beginTransaction();
@@ -34,7 +41,7 @@ try {
         SELECT g.quantity, COUNT(c.id) AS claimed_count
         FROM gifts g
         LEFT JOIN claims c ON c.gift_id = g.id
-        WHERE g.id = ?
+        WHERE g.id = ? AND g.archived_at IS NULL
         GROUP BY g.id
         FOR UPDATE
     ');
@@ -43,13 +50,13 @@ try {
 
     if (!$gift) {
         $pdo->rollBack();
-        header('Location: ./?err=invalid');
+        header('Location: ' . $back . 'err=invalid');
         exit;
     }
 
     if ((int) $gift['claimed_count'] >= (int) $gift['quantity']) {
         $pdo->rollBack();
-        header('Location: ./?err=already_claimed');
+        header('Location: ' . $back . 'err=already_claimed');
         exit;
     }
 
@@ -62,9 +69,9 @@ try {
     $pdo->commit();
 } catch (PDOException $e) {
     $pdo->rollBack();
-    header('Location: ./?err=invalid');
+    header('Location: ' . $back . 'err=invalid');
     exit;
 }
 
-header('Location: ./?msg=claimed');
+header('Location: ' . $back . 'msg=claimed');
 exit;

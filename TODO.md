@@ -82,3 +82,24 @@ AI: mark tasks `[x]` as each one is completed.
 - [x] Add a footer that links to the https://github.com/andykorth/andy-wishlist page and mention the MIT license
 - [x] Link to kortham.net as the author in the footer also.
 - [x] Is there anything we can do to hide the index.php? Just to make it classier?
+
+# Phase 8 - Christmas 2026
+
+- [x] Archive gifts already received. Archived gifts are hidden from the public list and shown in a separate admin table where they can be unarchived. The `archived_at` column is added automatically to existing databases (no reset needed).
+
+# Phase 9 - Multiple recipients
+
+Several family members share the site. One shared admin password; the admin picks whose list they are editing.
+
+- [x] `people` table (id, name, slug, intro, sort_order, created_at); `gifts.person_id` foreign key
+- [x] `ensureSchema()` migration: create `people`, add Andy, add `gifts.person_id`, assign all existing gifts to Andy
+- [x] Update `setup.php` with the new schema
+- [x] Public `/` becomes a recipient chooser (skipped when there is only one person); `/?for=<slug>` shows one person's list
+- [x] Person switcher pills on each list page; per-person intro text replaces the hardcoded subtitle
+- [x] Claim/unclaim redirect back to the list the visitor came from
+- [x] Admin person selector (remembered in the session); headings name the selected person
+- [x] Person dropdown on the gift form so gifts can be moved between lists
+- [x] Admin People section: add, edit (name, link name, intro, sort order), delete only when the person has no gifts
+- [x] Remove the Reset database button and `admin_reset.php`
+- [x] Change the site title to "Korth Family Wishlist"
+- [x] Update README

@@ -1,7 +1,7 @@
 <?php
 // =============================================================================
 // WARNING: Run this script ONCE to initialize the database, then DELETE IT.
-// Re-running it will DROP and recreate both tables, erasing all data.
+// Re-running it will DROP and recreate all tables, erasing all data.
 // =============================================================================
 
 if (!file_exists(__DIR__ . '/config.php')) {
@@ -9,6 +9,7 @@ if (!file_exists(__DIR__ . '/config.php')) {
 }
 
 require __DIR__ . '/config.php';
+require __DIR__ . '/partials/schema.php';
 
 try {
     $pdo = new PDO(
@@ -24,17 +25,23 @@ try {
 $statements = [
     'Drop claims'  => 'DROP TABLE IF EXISTS claims',
     'Drop gifts'   => 'DROP TABLE IF EXISTS gifts',
+    'Drop people'  => 'DROP TABLE IF EXISTS people',
+
+    'Create people' => PEOPLE_TABLE_SQL,
 
     'Create gifts' => '
         CREATE TABLE gifts (
             id          INT AUTO_INCREMENT PRIMARY KEY,
+            person_id   INT NOT NULL,
             name        VARCHAR(255) NOT NULL,
             description TEXT,
             url         VARCHAR(1000),
             image_url   VARCHAR(1000),
             quantity    INT NOT NULL DEFAULT 1,
             sort_order  INT NOT NULL DEFAULT 0,
-            created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            archived_at TIMESTAMP NULL DEFAULT NULL,
+            CONSTRAINT fk_gifts_person FOREIGN KEY (person_id) REFERENCES people(id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
     ',
 

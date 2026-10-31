@@ -7,10 +7,9 @@ $_hIsAdmin     = !empty($_SESSION['admin']);
     <a class="site-header__title" href="./"><?= htmlspecialchars(SITE_TITLE) ?></a>
     <nav class="site-header__nav">
         <a href="./"<?= $_hCurrentPage === 'index.php' ? ' class="active"' : '' ?>>Wishlist</a>
+        <a href="admin.php"<?= $_hCurrentPage === 'admin.php' ? ' class="active"' : '' ?>>Admin</a>
         <?php if ($_hIsAdmin): ?>
             <a href="logout.php">Log out</a>
-        <?php else: ?>
-            <a href="admin.php"<?= $_hCurrentPage === 'admin.php' ? ' class="active"' : '' ?>>Admin</a>
         <?php endif ?>
     </nav>
 </header>

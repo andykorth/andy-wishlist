@@ -133,6 +133,92 @@ a:hover { text-decoration: underline; }
     margin-bottom: 1.5rem;
 }
 
+/* ── Recipient chooser & switcher ──────────────────────────────────────────── */
+
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+.avatar--small { width: 1.4rem; height: 1.4rem; font-size: .72rem; }
+
+.avatar--0 { background: #e8f4ed; color: #2f6b4e; }
+.avatar--1 { background: #eef2ff; color: #3b4fc4; }
+.avatar--2 { background: #fdf0e6; color: #b5541a; }
+.avatar--3 { background: #f6ebf5; color: #8a3b80; }
+.avatar--4 { background: #e7f3f6; color: #1f6f82; }
+
+.person-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1rem;
+}
+
+.person-card {
+    display: flex;
+    align-items: center;
+    gap: .9rem;
+    padding: 1rem 1.15rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    color: var(--text);
+    text-decoration: none;
+    transition: border-color .15s, box-shadow .15s, transform .15s;
+}
+.person-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(0,0,0,.08);
+    transform: translateY(-2px);
+    text-decoration: none;
+}
+
+.person-card__text  { display: flex; flex-direction: column; gap: .1rem; flex: 1; min-width: 0; }
+.person-card__name  { font-size: 1.05rem; font-weight: 700; color: var(--text); }
+.person-card__count { font-size: .85rem; color: var(--muted); }
+.person-card__arrow { color: var(--muted); opacity: .45; font-size: 1.2rem; transition: color .15s, transform .15s; }
+.person-card:hover .person-card__arrow { color: var(--accent); opacity: 1; transform: translateX(3px); }
+
+.person-switcher {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .45rem;
+    margin: 1.25rem 0 0;
+}
+
+.person-switcher a {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .2rem .8rem .2rem .25rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--muted);
+    font-size: .88rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: border-color .15s, color .15s;
+}
+.person-switcher a:hover  { border-color: var(--accent); color: var(--accent); text-decoration: none; }
+.person-switcher a.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.person-switcher a.active .avatar { background: rgba(255,255,255,.22); color: #fff; }
+
+/* Admin selector has no avatars, so even out the pill padding */
+.person-switcher--admin { margin: 0 0 1.25rem; }
+.person-switcher--admin a { padding: .25rem .8rem; }
+.person-switcher__label { font-size: .85rem; font-weight: 600; color: var(--muted); margin-right: .15rem; }
+
 /* ── Gift list ─────────────────────────────────────────────────────────────── */
 
 .gift-list {
@@ -410,6 +496,7 @@ a:hover { text-decoration: underline; }
 .form-row input[type="text"],
 .form-row input[type="url"],
 .form-row input[type="number"],
+.form-row select,
 .form-row textarea {
     padding: .5rem .7rem;
     border: 1px solid var(--border);
@@ -464,6 +551,20 @@ a:hover { text-decoration: underline; }
 
 .admin-table__actions { white-space: nowrap; }
 .admin-table__actions form { display: inline; }
+
+.admin-section__hint {
+    font-size: .88rem;
+    color: var(--muted);
+    margin: -.5rem 0 1rem;
+}
+
+.admin-table--archived td { color: var(--muted); }
+
+.admin-subheading {
+    font-size: .95rem;
+    font-weight: 700;
+    margin: 1.5rem 0 .75rem;
+}
 
 .claim-details {
     list-style: none;
