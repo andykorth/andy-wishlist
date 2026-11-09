@@ -11,7 +11,7 @@ function showErrorPage(string $message): never {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title><?= $title ?></title>
-        <link rel="stylesheet" href="assets/style.css?v=<?= filemtime(__DIR__ . '/../assets/style.css') ?>">
+        <style><?php readfile(__DIR__ . '/../assets/style.css') ?></style>
     </head>
     <body>
     <?php

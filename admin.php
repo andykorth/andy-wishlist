@@ -25,7 +25,7 @@ if (empty($_SESSION['admin'])) {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Admin Login — <?= htmlspecialchars(SITE_TITLE) ?></title>
-        <link rel="stylesheet" href="assets/style.css?v=<?= filemtime(__DIR__ . '/assets/style.css') ?>">
+        <style><?php readfile(__DIR__ . '/assets/style.css') ?></style>
     </head>
     <body>
     <?php require __DIR__ . '/partials/header.php' ?>
@@ -132,7 +132,7 @@ $err = $_GET['err'] ?? '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin — <?= htmlspecialchars(SITE_TITLE) ?></title>
-    <link rel="stylesheet" href="assets/style.css?v=<?= filemtime(__DIR__ . '/assets/style.css') ?>">
+    <style><?php readfile(__DIR__ . '/assets/style.css') ?></style>
 </head>
 <body>
 <?php require __DIR__ . '/partials/header.php' ?>
