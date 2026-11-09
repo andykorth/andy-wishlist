@@ -80,7 +80,7 @@ $err = $_GET['err'] ?? '';
 </head>
 <body>
 <?php require __DIR__ . '/partials/header.php' ?>
-<div class="container">
+<main class="container">
     <?php if (!$person): ?>
         <h2 class="page-title">Whose list are you looking for?</h2>
         <?php if ($forSlug !== ''): ?>
@@ -240,7 +240,7 @@ $err = $_GET['err'] ?? '';
     <?php endif ?>
 
     <?php endif // $person ?>
-</div>
+</main>
 <?php require __DIR__ . '/partials/footer.php' ?>
 
 <script>

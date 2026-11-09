@@ -29,7 +29,7 @@ if (empty($_SESSION['admin'])) {
     </head>
     <body>
     <?php require __DIR__ . '/partials/header.php' ?>
-    <div class="container container--narrow">
+    <main class="container container--narrow">
         <h2 class="page-title">Admin Login</h2>
         <?php if ($loginError): ?>
             <div class="flash flash--error"><?= htmlspecialchars($loginError) ?></div>
@@ -39,7 +39,7 @@ if (empty($_SESSION['admin'])) {
             <input type="password" id="password" name="password" autofocus required>
             <button type="submit" class="btn btn--primary">Log in</button>
         </form>
-    </div>
+    </main>
     </body>
     </html>
     <?php
@@ -136,7 +136,7 @@ $err = $_GET['err'] ?? '';
 </head>
 <body>
 <?php require __DIR__ . '/partials/header.php' ?>
-<div class="container">
+<main class="container">
 
     <?php if ($msg === 'saved'): ?>
         <div class="flash flash--success">Gift saved.</div>
@@ -439,7 +439,7 @@ $err = $_GET['err'] ?? '';
             </div>
         </form>
     </section>
-</div>
+</main>
 <?php require __DIR__ . '/partials/footer.php' ?>
 
 <script>

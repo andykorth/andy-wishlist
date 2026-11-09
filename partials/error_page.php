@@ -19,13 +19,13 @@ function showErrorPage(string $message): never {
         require __DIR__ . '/header.php';
     }
     ?>
-    <div class="container">
+    <main class="container">
         <div class="error-page">
             <h2 class="error-page__title">Something went wrong</h2>
             <p class="error-page__msg"><?= htmlspecialchars($message) ?></p>
             <a href="./" class="btn">← Back to wishlist</a>
         </div>
-    </div>
+    </main>
     </body>
     </html>
     <?php
